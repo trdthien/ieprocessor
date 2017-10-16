@@ -1,0 +1,11 @@
+product:
+  name: name_
+  slug: slug_
+  description:
+    en: foo
+    de: bar
+variant:
+  sku: 1A92
+  images:
+    image:
+      url: http://thumb.com
