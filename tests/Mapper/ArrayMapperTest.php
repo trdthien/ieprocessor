@@ -20,38 +20,6 @@ class ArrayMapperTest extends TestCase
             [
                 [
                     [
-                        'bar' => 'quick',
-                        'baz' => 'fox'
-                    ],
-                    [
-                        'bar' => 'jumped',
-                        'baz' => 'over'
-                    ]
-                ],
-                [
-                    'foo' => [
-                        'bar' => null,
-                        'baz' => null
-                    ]
-                ],
-                [
-                    [
-                        'foo' => [
-                            'bar' => 'quick',
-                            'baz' => 'fox'
-                        ]
-                    ],
-                    [
-                        'foo' => [
-                            'bar' => 'jumped',
-                            'baz' => 'over'
-                        ]
-                    ]
-                ]
-            ],
-            [
-                [
-                    [
                         'baz' => 'fox'
                     ],
                     [
@@ -60,23 +28,78 @@ class ArrayMapperTest extends TestCase
                 ],
                 [
                     'foo' => [
-                        'bar' => [
-                            'baz' => null
+                        'one' => [
+                            'two' => '%baz%',
                         ],
                     ]
                 ],
                 [
                     [
                         'foo' => [
-                            'bar' => ['baz' => 'fox']
+                            'one' => ['two' => 'fox']
                         ]
                     ],
                     [
                         'foo' => [
-                            'bar' => ['baz' => 'jumped'],
+                            'one' => ['two' => 'jumped'],
                         ]
                     ]
                 ]
+            ],
+            [
+                [
+                    [
+                        'bar' => 'quick',
+                        'baz' => 'fox'
+                    ],
+                    [
+                        'bar' => 'jumped',
+                        'baz' => 'over'
+                    ],
+                ],
+                [
+                    'foo' => [
+                        'bar_' => '%bar%',
+                        'baz_' => '%baz%'
+                    ]
+                ],
+                [
+                    [
+                        'foo' => [
+                            'bar_' => 'quick',
+                            'baz_' => 'fox'
+                        ]
+                    ],
+                    [
+                        'foo' => [
+                            'bar_' => 'jumped',
+                            'baz_' => 'over'
+                        ]
+                    ]
+                ]
+            ],
+            [
+                [
+                    [
+                        'bar' => 'quick',
+                        'baz' => 'fox'
+                    ],
+                    [
+                        'bar' => 'jumped',
+                        'baz' => 'over'
+                    ],
+                ],
+                [
+                    'foo' => '%bar%'
+                ],
+                [
+                    [
+                        'foo' => 'quick',
+                    ],
+                    [
+                        'foo' => 'jumped',
+                    ]
+                ],
             ]
         ];
     }

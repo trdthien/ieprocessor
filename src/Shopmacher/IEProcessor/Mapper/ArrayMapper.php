@@ -37,15 +37,21 @@ class ArrayMapper implements MapperInterface
             return $data;
         }
 
+        $map = $map? $map : $this->map->toArray();
+
         $result = [];
 
         foreach ($data as $i => $row) {
             foreach ($map as $key => $value) {
                 if (is_array($value)) {
-                    $result[$i][$key] = $this->mapping([$row], $value)[0];
+                    $mappedValue = $this->mapping([$row], $value)[0];
+                } elseif (preg_match('/%(.*)%/', $value)) {
+                    $value = str_replace('%', '', $value);
+                    $mappedValue = $row[$value];
                 } else {
-                    $result[$i][$key] = $row[$key];
+                    $mappedValue = $value;
                 }
+                $result[$i][$key] = $mappedValue;
             }
         }
 

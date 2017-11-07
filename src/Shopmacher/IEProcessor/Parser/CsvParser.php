@@ -14,13 +14,19 @@ class CsvParser implements ParserInterface
      * @var MapperInterface[]
      */
     private $mappers;
+    /**
+     * @var string
+     */
+    private $delimiter;
 
     /**
      * CsvParser constructor.
+     * @param string $delimiter
      * @param array $mappers
      */
-    public function __construct(array $mappers = [])
+    public function __construct($delimiter = ',', array $mappers = [])
     {
+        $this->delimiter = $delimiter;
         $this->mappers = $mappers;
     }
 
@@ -30,6 +36,7 @@ class CsvParser implements ParserInterface
     public function parse($file)
     {
         $parser = new \parseCSV();
+        $parser->delimiter = $this->delimiter;
         $parser->parse($file);
 
         $collection = $parser->data;
