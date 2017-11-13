@@ -36,7 +36,7 @@ class CommerceToolsVariantDataIo implements NodeIoInterface
      */
     public function read($source = null)
     {
-        $request = ProductProjectionQueryRequest::of();
+        $request = ProductProjectionQueryRequest::of()->staged(true)->limit(500);
 
         $response = $request->executeWithClient($this->client);
 

@@ -94,6 +94,11 @@ class Node implements TransformArrayAbleInterface
      */
     public function addChildren($node)
     {
+        if (!$node instanceof Node) {
+            $this->children = $node;
+            return $this;
+        }
+
         if (!$this->children instanceof NodeCollection) {
             $this->children = new NodeCollection();
         }
@@ -123,56 +128,6 @@ class Node implements TransformArrayAbleInterface
         }
 
         return [$this->children => $this->children];
-    }
-
-    /**
-     * @param array $data
-     * @param array $mapping
-     * @return Node
-     */
-    public static function fromArray($data = [], $mapping = [])
-    {
-        $node = new self('root');
-        foreach ($mapping as $key => $childrenMap) {
-            $node->key = $key;
-            if (is_array($childrenMap)) {
-                foreach ($childrenMap as $cKey => $map) {
-                    if ($cKey === 'id') {
-                        $node->id = $data[$map];
-                        continue;
-                    }
-                    if (is_string($map) && preg_match('/^not_null\(%(.*)%\)$/', $map)) {
-                        $vKey = preg_replace('/^not_null\(%(.*)%\)$/', '$1', $map);
-                        if (empty($data[$vKey])) {
-                            return;
-                        }
-
-                    }
-                    $cNode = Node::fromArray($data, [$cKey => $map]);
-                    if ($cNode) {
-                        $node->addChildren($cNode);
-                    }
-                }
-            } else {
-                if (preg_match('/^bool\(.*\)$/', $childrenMap)) {
-                    $vKey = preg_replace('/^bool\(%(.*)%\)$/', '$1', $childrenMap);
-                    $node->children = boolval($data[$vKey]);
-                } elseif (preg_match('/^number\(.*\)$/', $childrenMap)) {
-                    $vKey = preg_replace('/^number\(%(.*)%\)$/', '$1', $childrenMap);
-                    $node->children = (int) $data[$vKey];
-                } elseif (preg_match('/^not_null\(.*\)$/', $childrenMap)) {
-                    $vKey = preg_replace('/^not_null\(%(.*)%\)$/', '$1', $childrenMap);
-                    $node->children = $data[$vKey];
-                } elseif (preg_match('/%.*%/', $childrenMap)) {
-                    $vKey = preg_replace('/^%(.*)%$/', '$1', $childrenMap);
-                    $node->children = $data[$vKey];
-                } else {
-                    $node->children = $childrenMap;
-                }
-            }
-        }
-
-        return $node;
     }
 
     /**

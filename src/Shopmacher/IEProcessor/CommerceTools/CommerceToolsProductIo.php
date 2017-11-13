@@ -3,12 +3,15 @@
 namespace Shopmacher\IEProcessor\CommerceTools;
 
 use Commercetools\Core\Client;
+use Commercetools\Core\Model\Category\CategoryReference;
+use Commercetools\Core\Model\Category\CategoryReferenceCollection;
 use Commercetools\Core\Model\Common\AttributeCollection;
 use Commercetools\Core\Model\Common\LocalizedString;
 use Commercetools\Core\Model\Product\ProductDraft;
 use Commercetools\Core\Model\Product\ProductVariantDraft;
 use Commercetools\Core\Model\Product\ProductVariantDraftCollection;
 use Commercetools\Core\Model\ProductType\ProductTypeReference;
+use Commercetools\Core\Request\Categories\CategoryQueryRequest;
 use Commercetools\Core\Request\Products\ProductCreateRequest;
 use Commercetools\Core\Request\Products\ProductProjectionQueryRequest;
 use Shopmacher\IEProcessor\NodeIoInterface;
@@ -76,6 +79,7 @@ class CommerceToolsProductIo implements NodeIoInterface
         foreach ($nodes->toList() as $node) {
             $response = null;
             $variants = $node->getChildren()->findNode(Node::of('variants'));
+            $categories = $node->getChildren()->findNode(Node::of('categories'));
             $name = $node->getChildren()->findNode(Node::of('name'));
             $slug = $node->getChildren()->findNode(Node::of('slug'));
             $type = $node->getChildren()->findNode(Node::of('productType'));
@@ -110,6 +114,31 @@ class CommerceToolsProductIo implements NodeIoInterface
                     $productDraft->setVariants($variantCollection);
                 }
             }
+
+            $categoryReferences = CategoryReferenceCollection::of();
+            $categoriesArray = $categories->getChildren()->toArray();
+
+            foreach ($categories->getChildren()->toList() as $category) {
+                $categoryArray = $category->getChildren()->toArray();
+                if ($categoryArray['externalId']) {
+                    $query = sprintf('externalId="%s"', $categoryArray['externalId']);
+                } elseif ($categoryArray['key']) {
+                    $query = sprintf('externalId="%s"', $categoryArray['key']);
+                } else {
+                    $query = sprintf('externalId="%s"', $categoryArray['id']);
+                }
+
+                $request = CategoryQueryRequest::of();
+                $request->where($query)->limit(1);
+                $response = $request->executeWithClient($this->client);
+                $result = $request->mapFromResponse($response);
+                $category = $result->current();
+
+                $categoryReference = CategoryReference::ofId($category->getId());
+                $categoryReferences->add($categoryReference);
+            }
+
+            $productDraft->setCategories($categoryReferences);
 
             $request = ProductCreateRequest::ofDraft($productDraft);
             $response = $request->executeWithClient($this->client);

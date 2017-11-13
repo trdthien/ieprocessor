@@ -14,19 +14,31 @@ use Symfony\Component\Yaml\Yaml;
  */
 class CsvDataIo implements NodeIoInterface
 {
+    /**
+     * @var \parseCSV
+     */
     private $parser;
+    /**
+     * @var array
+     */
     private $forwardMap;
+    /**
+     * @var array
+     */
     private $reverseMap;
 
     /**
      * CsvDataIo constructor.
      * @param string $delimiter
+     * @param int $limit
      */
-    public function __construct($delimiter = ',')
+    public function __construct($delimiter = ',', $limit = -1)
     {
         $this->parser = new \parseCSV();
-        $this->parser->limit = 300;
         $this->parser->delimiter = $delimiter;
+        if ($limit > 0) {
+            $this->parser->limit = $limit;
+        }
     }
 
     /**
@@ -62,7 +74,8 @@ class CsvDataIo implements NodeIoInterface
     }
 
     /**
-     * @param mixed|null $source
+     * @param null $source
+     * @return NodeCollection
      */
     public function read($source = null)
     {
@@ -74,7 +87,7 @@ class CsvDataIo implements NodeIoInterface
         $nodes = new NodeCollection();
 
         foreach ($this->parser->data as $row) {
-            $nodes->add(Node::fromArray(
+            $nodes->add(FlatArrayToNodeBuilder::build(
                 $row,
                 $this->forwardMap
             ));

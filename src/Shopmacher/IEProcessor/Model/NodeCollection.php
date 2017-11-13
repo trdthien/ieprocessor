@@ -91,7 +91,7 @@ class NodeCollection implements TransformArrayAbleInterface
      */
     private function pushNode(Node $node)
     {
-        if (!empty($this->nodes) && end($this->nodes)->getKey() == $node->getKey()) {
+        if (!empty($this->nodes) && is_int($node->getKey()) && end($this->nodes)->getKey() === $node->getKey()) {
             $node->setKey($node->getKey()+1);
         }
         $this->nodes[] = $node;
