@@ -3,7 +3,8 @@
         "symfony/yaml": "^3.3",
         "parsecsv/php-parsecsv": "^0.4.5",
         "symfony/property-info": "^3.3",
-        "symfony/property-access": "^3.3"
+        "symfony/property-access": "^3.3",
+        "commercetools/php-sdk": "^2.2"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.6"

@@ -2,11 +2,9 @@
 
 namespace Shopmacher\IEProcessor\Csv;
 
-use Shopmacher\IEProcessor\Model\Node;
 use Shopmacher\IEProcessor\Model\NodeCollection;
 use Shopmacher\IEProcessor\Model\NodeToFlatArrayBuilder;
 use Shopmacher\IEProcessor\NodeIoInterface;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class CsvDataIo
@@ -108,12 +106,19 @@ class CsvDataIo implements NodeIoInterface
             throw new \Exception('please provide the name of file');
         }
 
-        $rows = [];
+        $records = [];
 
-        foreach ($nodes->toList() as $node) {
-            $rows[] = NodeToFlatArrayBuilder::build($node)[0];
+        foreach ($nodes->toList() as $row => $node) {
+            $data = NodeToFlatArrayBuilder::build($node)[0];
+            if ($this->reverseMap) {
+                foreach ($this->reverseMap as $key => $mapValue) {
+                    $records[$row+1][] = isset($data[$key]) ? $data[$key] : null;
+                }
+            }
         }
 
-        $this->parser->save($file, $rows);
+        array_unshift($records, array_values($this->reverseMap));
+
+        $this->parser->save($file, array_values($records));
     }
 }

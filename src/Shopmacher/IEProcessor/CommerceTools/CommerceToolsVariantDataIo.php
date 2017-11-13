@@ -72,12 +72,18 @@ class CommerceToolsVariantDataIo implements NodeIoInterface
                         'product.slug'
                     )
                 );
-                $children = ArrayToNodeBuilder::build(
-                    $ctVariant->toArray()
+                $node->addChildren(Node::ofKeyAndValue('sku', $ctVariant->getSku()));
+                $attributes = ArrayToNodeBuilder::build(
+                    $ctVariant->getAttributes()->toArray(),
+                    'attributes'
                 );
-                foreach ($children->toList() as $child) {
-                    $node->addChildren($child);
+                foreach ($attributes->getChildren()->toList() as $attribute) {
+                    $attribute->setKey(
+                        $attribute->getChildren()->findNode(Node::of('name'))->getChildren()
+                    );
                 }
+
+                $node->addChildren($attributes);
                 $nodes->add($node);
             }
         }

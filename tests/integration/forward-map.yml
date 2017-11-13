@@ -1,0 +1,150 @@
+product:
+  id: sku
+  name:
+    en: %name[lang=en]%
+    de: %name[lang=de]%
+  categories:
+    - id: maincategory[code]
+      externalId: %maincategory[code]%
+    - id: subcategory[code]
+      externalId: %subcategory[code]%
+  variants:
+    - id: variantSku
+      sku: %variantSku%
+      attributes:
+        - name: manufacturerSku
+          value: %manufacturerSku%
+        - name: masterSku
+          value: %sku%
+        - name: futuraSKU
+          value: %sku[FUTURA]%
+        - name: channelPilotUID
+          value: %UID%
+        - name: variantSlug
+          value:
+            en: %variantSlug.en%
+            de: %variantSlug.de%
+        - name: variantName
+          value:
+            en: %variantName.en%
+            de: %variantName.de%
+        - name: brand
+          value: %brand[code]%
+        - name: ean
+          value: %EAN%
+        - name: filterColor1
+          value: %filtercolor[code]%
+        - name: filterColor2
+          value: not_null(%filtercolor2[code]%)
+        - name: filterColor3
+          value: not_null(%filtercolor3[code]%)
+        - name: size
+          value: %size%
+        - name: gender
+          value: %gender[code]%
+        - name: series
+          value: not_null(%series[code]%)
+        - name: wheels
+          value: not_null(%rolls[code]%)
+        - name: productType
+          value: not_null(%productType[code]%)
+        - name: productTypeFeature1
+          value: not_null(%productFeature1[code]%)
+        - name: productTypeFeature2
+          value: not_null(%productFeature2[code]%)
+        - name: productTypeFeature3
+          value: not_null(%productFeature3[code]%)
+        - name: cabinLuggage
+          value: not_null(%carryOnLuggageType[code]%)
+        - name: specVolume
+          value: %spec_volume%
+        - name: specVolumeUnit
+          value: l
+        - name: specWeight
+          value: %spec_weight%
+        - name: specWeightUnit
+          value: kg
+        - name: specExteriorHeight
+          value: %spec_exteriorHeight%
+        - name: specExteriorWidth
+          value: %spec_exteriorWidth%
+        - name: specExteriorDepth
+          value: %spec_exteriorDepth%
+        - name: specMeasurementsUnit
+          value: cm
+        - name: specInteriorHeight
+          value: %spec_interiorHeight%
+        - name: specInteriorWidth
+          value: %spec_interiorWidth%
+        - name: specInteriorDepth
+          value: %spec_interiorDepth%
+        - name: specHandleHeight
+          value: %spec_handleHeight%
+        - name: specHardwareCompartment
+          value: %spec_hardwareCompartment%
+        - name: specHardwareCompartmentUnit
+          value: inch
+        - name: manufacturerColorName
+          value: %color[code]%
+        - name: specMadeIn
+          value: %spec_madeIn[code]%
+        - name: shortDescription
+          value:
+            en: %ShortDescription[lang=en]%
+            de: %ShortDescription[lang=de]%
+        - name: deliveryTimeInStock
+          value:
+            en: %deliveryTimeInStock[lang=en]%
+            de: %deliveryTimeInStock[lang=de]%
+        - name: deliveryTimeOutOfStock
+          value:
+            en: %deliveryTimeOutOfStock[lang=en]%
+            de: %deliveryTimeOutOfStock[lang=de]%
+#        offlineWithoutSuccessor:
+#          name: offlineWithoutSuccessor
+#          value: %offlineWithoutSuccessor%
+        - name: onlyAvailableOffline
+          value: bool(%onlyAvailableOffline%)
+        - name: visibleInShop
+          value: bool(%visibleInShop%)
+        - name: warehouseId
+          value: number(%warehouse%)
+        - name: noOfImages
+          value: number(%numberOfImages%)
+        - name: noOfSpinsets
+          value: number(%numberOfSpinsets%)
+        - name: noOfVideos
+          value: number(%numberOfVideos%)
+        - name: predecessor
+          value: %predecessor%
+        - name: successor
+          value: %successor%
+#        successor_error:
+#          name: successor_error
+#          value: %successor_error%
+        - name: warranty
+          value: not_null(%warranty[code]%)
+        - name: descriptionTop
+          value:
+            en: %description_front[lang=en]%
+            de: %description_front[lang=de]%
+        - name: descriptionBullets
+          value:
+            en: %description_BP[lang=en]%
+            de: %description_BP[lang=de]%
+        - name: dutyNumber
+          value: %dutyNumber%
+        - name: origin
+          value: %origin[code]%
+#        - name: descriptionBottom
+#          value:
+#            en: %description_back[lang=en]%
+#            de: %description_back[lang=de]%
+        - name: scene7ImageCode
+          value: %color[S7ImgCode]%
+        - name: scene7ColorCode
+          value: %color[S7ColorCode]%
+        - name: material
+          value: not_null(%material[code]%)
+
+#product.name.en|product.name.de|product.variants.variant.sku|product.variant.attributes.manufacturerSku.name|product.variant.attributes.manufacturerSku.value|product.variant.attributes.manufacturerSku.name|product.variant.attributes.manufacturerSku.value|
