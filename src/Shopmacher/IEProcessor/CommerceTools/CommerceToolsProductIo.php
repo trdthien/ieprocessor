@@ -14,6 +14,8 @@ use Commercetools\Core\Model\ProductType\ProductTypeReference;
 use Commercetools\Core\Request\Categories\CategoryQueryRequest;
 use Commercetools\Core\Request\Products\ProductCreateRequest;
 use Commercetools\Core\Request\Products\ProductProjectionQueryRequest;
+use Psr\Log\LogLevel;
+use Shopmacher\IEProcessor\Model\TraitLogger;
 use Shopmacher\IEProcessor\NodeIoInterface;
 use Shopmacher\IEProcessor\Model\ArrayToNodeBuilder;
 use Shopmacher\IEProcessor\Model\Node;
@@ -29,6 +31,8 @@ class CommerceToolsProductIo implements NodeIoInterface
      * @var Client
      */
     private $client;
+
+    use TraitLogger;
 
     /**
      * CommerceToolsProductIo constructor.
@@ -144,9 +148,14 @@ class CommerceToolsProductIo implements NodeIoInterface
             $response = $request->executeWithClient($this->client);
 
             if ($response->isError()) {
-                print_r($productDraft->toArray());
-                print_r($response->getErrors());
-                throw new \Exception($response->getErrors()->current()->getMessage());
+                $this->getLogger()->log(
+                    LogLevel::ERROR,
+                    sprintf(
+                        'Message: %s, Product: %s',
+                        $response->getErrors()->current()->getMessage(),
+                        serialize($productDraft->toArray())
+                    )
+                );
             }
         }
     }
