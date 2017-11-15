@@ -4,13 +4,16 @@ namespace Shopmacher\IEProcessor\Test\CommerceTools;
 
 use Commercetools\Core\Client;
 use Commercetools\Core\Config;
+use Commercetools\Core\Helper\Subscriber\Log\SimpleLogger;
 use Commercetools\Core\Model\Common\Context;
 use PHPUnit\Framework\TestCase;
 use Shopmacher\IEProcessor\CommerceTools\CommerceToolsProductIo;
 use Shopmacher\IEProcessor\CommerceTools\CommerceToolsVariantDataIo;
 use Shopmacher\IEProcessor\Csv\CsvDataIo;
 use Shopmacher\IEProcessor\Csv\Helper\ConvertBoolean;
+use Shopmacher\IEProcessor\Csv\Helper\ConvertName;
 use Shopmacher\IEProcessor\Csv\Helper\ConvertNumber;
+use Shopmacher\IEProcessor\Csv\Helper\ConvertSlug;
 use Shopmacher\IEProcessor\Csv\Helper\NotNullConverter;
 use Shopmacher\IEProcessor\Csv\Helper\StackConverters;
 use Shopmacher\IEProcessor\Model\Node;
@@ -41,24 +44,26 @@ class CommerceToolsToCsvTest extends TestCase
         $this->client = Client::ofConfig($config);
     }
 
-    public function testExportCsv()
-    {
-        $reader = new CommerceToolsVariantDataIo($this->client);
-        $nodes = $reader->read();
-
-        $writer = new CsvDataIo(';');
-        $writer->setReverseMap(Yaml::parse(file_get_contents(__DIR__ . '/reserver-map.yml')));
-        $writer->write($nodes, 'test.csv');
-    }
+//    public function testExportCsv()
+//    {
+//        $reader = new CommerceToolsVariantDataIo($this->client);
+//        $nodes = $reader->read();
+//
+//        $writer = new CsvDataIo(';');
+//        $writer->setReverseMap(Yaml::parse(file_get_contents(__DIR__ . '/reserver-map.yml')));
+//        $writer->write($nodes, 'test.csv');
+//    }
 
     public function testImportCsv()
     {
         StackConverters::register(new ConvertBoolean());
         StackConverters::register(new ConvertNumber());
         StackConverters::register(new NotNullConverter());
+        StackConverters::register(new ConvertSlug());
+        StackConverters::register(new ConvertName());
 
-        $reader = new CsvDataIo(';', 100);
-        $reader->setForwardMap(Yaml::parse(file_get_contents(__DIR__ . '/forward-map.yml.yml')));
+        $reader = new CsvDataIo(';', 500);
+        $reader->setForwardMap(Yaml::parse(file_get_contents(__DIR__ . '/forward-map.yml')));
         $nodes  = $reader->read(__DIR__.'/integrationnew-products-2.csv');
 
         foreach ($nodes->toList() as $node) {
@@ -66,13 +71,13 @@ class CommerceToolsToCsvTest extends TestCase
             $p = $node->toArray();
             $p = reset($p);
 
-            $node->addChildren(
-                Node::of('slug')->addChildren(
-                    Node::ofKeyAndValue('en', $p['variants'][0]['attributes'][3]['value']['en'])
-                )->addChildren(
-                    Node::ofKeyAndValue('de', $p['variants'][0]['attributes'][3]['value']['de'])
-                )
-            );
+//            $node->addChildren(
+//                Node::of('slug')->addChildren(
+//                    Node::ofKeyAndValue('en', $p['variants'][0]['attributes'][4]['value']['en'])
+//                )->addChildren(
+//                    Node::ofKeyAndValue('de', $p['variants'][0]['attributes'][4]['value']['de'])
+//                )
+//            );
             $node->addChildren(
                 Node::of('productType')
                         ->addChildren(
@@ -85,13 +90,7 @@ class CommerceToolsToCsvTest extends TestCase
         }
 
         $writer = new CommerceToolsProductIo($this->client);
+        $writer->setLogger(new SimpleLogger('log.txt'));
         $writer->write($nodes);
     }
-}
-
-function clean($str)
-{
-    $str = preg_replace('/\s+/', '-', $str);
-    // Removes special chars.
-    return strtolower(preg_replace('/[^A-Za-z0-9\-]/', '', $str));
 }

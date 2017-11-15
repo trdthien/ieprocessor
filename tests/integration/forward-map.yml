@@ -1,8 +1,14 @@
 product:
   id: sku
   name:
-    en: %name[lang=en]%
-    de: %name[lang=de]%
+    en: product_name(var=%name[lang=en]%-%segment[lang=en]%-%series[lang=en]%-%size%-%spec_volume%)
+    de: product_name(var=%name[lang=de]%-%segment[lang=de]%-%series[lang=de]%-%size%-%spec_volume%)
+  slug:
+    en: slug(var=%brand[code]%-%name[lang=en]%-%segment[lang=en]%-%series[lang=en]%-%variantSku%-%subcategory[code]%)
+    de: slug(var=%brand[code]%-%name[lang=de]%-%segment[lang=de]%-%series[lang=de]%-%variantSku%-%subcategory[code]%)
+#  productType:
+#    id: c5da1cef-ed32-4b7c-918c-90c468603c83
+#    typeId: product-type
   categories:
     - id: maincategory[code]
       externalId: %maincategory[code]%
@@ -100,8 +106,7 @@ product:
           value:
             en: %deliveryTimeOutOfStock[lang=en]%
             de: %deliveryTimeOutOfStock[lang=de]%
-#        offlineWithoutSuccessor:
-#          name: offlineWithoutSuccessor
+#        - name: offlineWithoutSuccessor
 #          value: %offlineWithoutSuccessor%
         - name: onlyAvailableOffline
           value: bool(%onlyAvailableOffline%)
@@ -119,9 +124,8 @@ product:
           value: %predecessor%
         - name: successor
           value: %successor%
-#        successor_error:
-#          name: successor_error
-#          value: %successor_error%
+        - name: successor_error
+          value: %successor_error%
         - name: warranty
           value: not_null(%warranty[code]%)
         - name: descriptionTop
@@ -136,15 +140,13 @@ product:
           value: %dutyNumber%
         - name: origin
           value: %origin[code]%
-#        - name: descriptionBottom
-#          value:
-#            en: %description_back[lang=en]%
-#            de: %description_back[lang=de]%
+        - name: descriptionBottom
+          value:
+            en: %description_back[lang=en]%
+            de: %description_back[lang=de]%
         - name: scene7ImageCode
           value: %color[S7ImgCode]%
         - name: scene7ColorCode
           value: %color[S7ColorCode]%
         - name: material
           value: not_null(%material[code]%)
-
-#product.name.en|product.name.de|product.variants.variant.sku|product.variant.attributes.manufacturerSku.name|product.variant.attributes.manufacturerSku.value|product.variant.attributes.manufacturerSku.name|product.variant.attributes.manufacturerSku.value|

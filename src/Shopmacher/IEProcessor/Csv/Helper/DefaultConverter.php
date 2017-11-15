@@ -8,7 +8,7 @@ namespace Shopmacher\IEProcessor\Csv\Helper;
  */
 class DefaultConverter implements ConverterInterface
 {
-    const PATTERN = '/^%(.*)%$/';
+    const PATTERN = '/^%([^%]+)%$/';
 
     public function matching(&$key)
     {
