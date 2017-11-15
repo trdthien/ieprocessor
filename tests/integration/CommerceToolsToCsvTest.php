@@ -62,26 +62,15 @@ class CommerceToolsToCsvTest extends TestCase
         StackConverters::register(new ConvertSlug());
         StackConverters::register(new ConvertName());
 
-        $reader = new CsvDataIo(';', 500);
+        $reader = new CsvDataIo(';');
         $reader->setForwardMap(Yaml::parse(file_get_contents(__DIR__ . '/forward-map.yml')));
         $nodes  = $reader->read(__DIR__.'/integrationnew-products-2.csv');
 
         foreach ($nodes->toList() as $node) {
-            /** @var Node $node */
-            $p = $node->toArray();
-            $p = reset($p);
-
-//            $node->addChildren(
-//                Node::of('slug')->addChildren(
-//                    Node::ofKeyAndValue('en', $p['variants'][0]['attributes'][4]['value']['en'])
-//                )->addChildren(
-//                    Node::ofKeyAndValue('de', $p['variants'][0]['attributes'][4]['value']['de'])
-//                )
-//            );
             $node->addChildren(
                 Node::of('productType')
                         ->addChildren(
-                            Node::ofKeyAndValue('id', 'c5da1cef-ed32-4b7c-918c-90c468603c83')
+                            Node::ofKeyAndValue('id', '66083275-712c-4ea4-a0cb-30859223d5da')
                         )
                         ->addChildren(
                             Node::ofKeyAndValue('typeId', 'product-type')
@@ -90,7 +79,8 @@ class CommerceToolsToCsvTest extends TestCase
         }
 
         $writer = new CommerceToolsProductIo($this->client);
-        $writer->setLogger(new SimpleLogger('log.txt'));
+        $fh = fopen(__DIR__ . '/import-log.txt', 'w');
+        $writer->setLogger(new SimpleLogger($fh));
         $writer->write($nodes);
     }
 }

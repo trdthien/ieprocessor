@@ -151,9 +151,8 @@ class CommerceToolsProductIo implements NodeIoInterface
                 $this->getLogger()->log(
                     LogLevel::ERROR,
                     sprintf(
-                        'Message: %s, Product: %s',
-                        $response->getErrors()->current()->getMessage(),
-                        serialize($productDraft->toArray())
+                        "Message: %s",
+                        $response->getErrors()->current()->getMessage()
                     )
                 );
             }

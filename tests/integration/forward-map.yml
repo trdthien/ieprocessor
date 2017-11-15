@@ -63,31 +63,31 @@ product:
         - name: cabinLuggage
           value: not_null(%carryOnLuggageType[code]%)
         - name: specVolume
-          value: %spec_volume%
+          value: number(%spec_volume%)
         - name: specVolumeUnit
           value: l
         - name: specWeight
-          value: %spec_weight%
+          value: number(%spec_weight%)
         - name: specWeightUnit
           value: kg
         - name: specExteriorHeight
-          value: %spec_exteriorHeight%
+          value: number(%spec_exteriorHeight%)
         - name: specExteriorWidth
-          value: %spec_exteriorWidth%
+          value: number(%spec_exteriorWidth%)
         - name: specExteriorDepth
-          value: %spec_exteriorDepth%
+          value: number(%spec_exteriorDepth%)
         - name: specMeasurementsUnit
           value: cm
         - name: specInteriorHeight
-          value: %spec_interiorHeight%
+          value: number(%spec_interiorHeight%)
         - name: specInteriorWidth
-          value: %spec_interiorWidth%
+          value: number(%spec_interiorWidth%)
         - name: specInteriorDepth
-          value: %spec_interiorDepth%
+          value: number(%spec_interiorDepth%)
         - name: specHandleHeight
-          value: %spec_handleHeight%
+          value: number(%spec_handleHeight%)
         - name: specHardwareCompartment
-          value: %spec_hardwareCompartment%
+          value: number(%spec_hardwareCompartment%)
         - name: specHardwareCompartmentUnit
           value: inch
         - name: manufacturerColorName
@@ -106,8 +106,8 @@ product:
           value:
             en: %deliveryTimeOutOfStock[lang=en]%
             de: %deliveryTimeOutOfStock[lang=de]%
-#        - name: offlineWithoutSuccessor
-#          value: %offlineWithoutSuccessor%
+        - name: offlineWithoutSuccessor
+          value: bool(%offlineWithoutSuccessor%)
         - name: onlyAvailableOffline
           value: bool(%onlyAvailableOffline%)
         - name: visibleInShop

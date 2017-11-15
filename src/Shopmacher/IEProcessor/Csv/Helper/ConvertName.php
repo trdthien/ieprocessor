@@ -36,7 +36,7 @@ class ConvertName implements ConverterInterface
             $segment = isset($raw[$vars[1]]) ? $raw[$vars[1]] : $vars[1];
             $series = isset($raw[$vars[2]]) ? $raw[$vars[2]] : $vars[2];
             $size = isset($raw[$vars[3]]) ? $raw[$vars[3]] : $vars[3];
-            $specVolume = !empty($raw[$vars[4]]) ? $raw[$vars[4]] : '';
+            $specVolume = !empty($raw[$vars[4]]) ? $raw[$vars[4]] . 'l' : '';
             return sprintf(
                 "%s %s %s %s %s",
                 $name,
