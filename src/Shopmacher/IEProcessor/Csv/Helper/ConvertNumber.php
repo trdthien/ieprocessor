@@ -30,6 +30,6 @@ class ConvertNumber implements ConverterInterface
      */
     public function apply($value, $raw)
     {
-        return (int) $value;
+        return (float) $value;
     }
 }
