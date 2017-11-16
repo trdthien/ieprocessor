@@ -13,6 +13,7 @@ use Shopmacher\IEProcessor\Csv\CsvDataIo;
 use Shopmacher\IEProcessor\Csv\Helper\ConvertBoolean;
 use Shopmacher\IEProcessor\Csv\Helper\ConvertName;
 use Shopmacher\IEProcessor\Csv\Helper\ConvertNumber;
+use Shopmacher\IEProcessor\Csv\Helper\ConvertRandom;
 use Shopmacher\IEProcessor\Csv\Helper\ConvertSlug;
 use Shopmacher\IEProcessor\Csv\Helper\NotNullConverter;
 use Shopmacher\IEProcessor\Csv\Helper\StackConverters;
@@ -34,9 +35,9 @@ class CommerceToolsToCsvTest extends TestCase
     public function setUp()
     {
         $config = [
-            'client_id' => '0Ru470w3DafSAsCXKeeXyws_',
-            'client_secret' => 'V3OV46rk5vSiw2qXlZ6JBYnM-SiY7nF5',
-            'project' => 'koffer24-data'
+            'client_id' => 'lUVaD8NWY7rYTnnHaZhGCNvG',
+            'client_secret' => 'eYkowvcaOmHt_EyetrKU8IlIn6RF1uGY',
+            'project' => 'koffer24-dev'
         ];
 
         $context = Context::of()->setLanguages(['en'])->setLocale('en_US')->setGraceful(true);
@@ -61,25 +62,14 @@ class CommerceToolsToCsvTest extends TestCase
         StackConverters::register(new NotNullConverter());
         StackConverters::register(new ConvertSlug());
         StackConverters::register(new ConvertName());
+        StackConverters::register(new ConvertRandom());
 
-        $reader = new CsvDataIo(';');
-        $reader->setForwardMap(Yaml::parse(file_get_contents(__DIR__ . '/forward-map.yml')));
+        $reader = new CsvDataIo(';', 100);
+        $reader->setForwardMap(Yaml::parse(file_get_contents(__DIR__ . '/forward-map-dev.yml')));
         $nodes  = $reader->read(__DIR__.'/integrationnew-products-2.csv');
 
-        foreach ($nodes->toList() as $node) {
-            $node->addChildren(
-                Node::of('productType')
-                        ->addChildren(
-                            Node::ofKeyAndValue('id', '66083275-712c-4ea4-a0cb-30859223d5da')
-                        )
-                        ->addChildren(
-                            Node::ofKeyAndValue('typeId', 'product-type')
-                        )
-            );
-        }
-
         $writer = new CommerceToolsProductIo($this->client);
-        $fh = fopen(__DIR__ . '/import-log.txt', 'w');
+        $fh = fopen(__DIR__ . '/import-log-dev.txt', 'w');
         $writer->setLogger(new SimpleLogger($fh));
         $writer->write($nodes);
     }

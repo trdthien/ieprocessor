@@ -1,22 +1,29 @@
 product:
-  id: sku
+  nid: %sku%
   name:
     en: product_name(var=%name[lang=en]%-%segment[lang=en]%-%series[lang=en]%-%size%-%spec_volume%)
     de: product_name(var=%name[lang=de]%-%segment[lang=de]%-%series[lang=de]%-%size%-%spec_volume%)
   slug:
     en: slug(var=%brand[code]%-%name[lang=en]%-%segment[lang=en]%-%series[lang=en]%-%variantSku%-%subcategory[code]%)
     de: slug(var=%brand[code]%-%name[lang=de]%-%segment[lang=de]%-%series[lang=de]%-%variantSku%-%subcategory[code]%)
-#  productType:
-#    id: c5da1cef-ed32-4b7c-918c-90c468603c83
-#    typeId: product-type
+  productType:
+    id: 52bad25d-411d-4220-b99e-a369c82f6d14
+    typeId: product-type
   categories:
-    - id: maincategory[code]
+    - nid: %maincategory[code]%
       externalId: %maincategory[code]%
-    - id: subcategory[code]
+    - nid: %subcategory[code]%
       externalId: %subcategory[code]%
+  taxCategory:
+      id: a1279917-5617-490d-b6d8-6d4110a268d2
+      typeId: tax-category
   variants:
-    - id: variantSku
+    - nid: %variantSku%
       sku: %variantSku%
+      prices:
+        - value:
+            currencyCode: EUR
+            centAmount: random(1990-9900)
       attributes:
         - name: manufacturerSku
           value: %manufacturerSku%
@@ -66,6 +73,10 @@ product:
           value: number(%spec_volume%)
         - name: specVolumeUnit
           value: l
+        - name: listPrice
+          value:
+            currencyCode: EUR
+            centAmount: number(%9900%)
         - name: specWeight
           value: number(%spec_weight%)
         - name: specWeightUnit

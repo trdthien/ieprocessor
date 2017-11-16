@@ -3,14 +3,17 @@
 namespace Shopmacher\IEProcessor\CommerceTools;
 
 use Commercetools\Core\Client;
+use Commercetools\Core\Model\Category\Category;
 use Commercetools\Core\Model\Category\CategoryReference;
 use Commercetools\Core\Model\Category\CategoryReferenceCollection;
 use Commercetools\Core\Model\Common\AttributeCollection;
 use Commercetools\Core\Model\Common\LocalizedString;
+use Commercetools\Core\Model\Common\PriceDraftCollection;
 use Commercetools\Core\Model\Product\ProductDraft;
 use Commercetools\Core\Model\Product\ProductVariantDraft;
 use Commercetools\Core\Model\Product\ProductVariantDraftCollection;
 use Commercetools\Core\Model\ProductType\ProductTypeReference;
+use Commercetools\Core\Model\TaxCategory\TaxCategoryReference;
 use Commercetools\Core\Request\Categories\CategoryQueryRequest;
 use Commercetools\Core\Request\Products\ProductCreateRequest;
 use Commercetools\Core\Request\Products\ProductProjectionQueryRequest;
@@ -81,71 +84,89 @@ class CommerceToolsProductIo implements NodeIoInterface
     public function write(NodeCollection $nodes, $target = null)
     {
         foreach ($nodes->toList() as $node) {
-            $response = null;
-            $variants = $node->getChildren()->findNode(Node::of('variants'));
-            $categories = $node->getChildren()->findNode(Node::of('categories'));
-            $name = $node->getChildren()->findNode(Node::of('name'));
-            $slug = $node->getChildren()->findNode(Node::of('slug'));
-            $type = $node->getChildren()->findNode(Node::of('productType'));
-            $productDraft = ProductDraft::of();
-            $productDraft->setSlug(LocalizedString::fromArray($slug->getChildren()->toArray()));
-            $productDraft->setName(LocalizedString::fromArray($name->getChildren()->toArray()));
-            $productDraft->setProductType(ProductTypeReference::fromArray($type->getChildren()->toArray()));
+            $nameNode = $node->getChildren()->findNode(Node::of('name'));
+            $slugNode = $node->getChildren()->findNode(Node::of('slug'));
+            $variantNodes = $node->getChildren()->findNode(Node::of('variants'));
+            $categoryNodes = $node->getChildren()->findNode(Node::of('categories'));
+            $productTypeNode = $node->getChildren()->findNode(Node::of('productType'));
+            $taxCategoryNode = $node->getChildren()->findNode(Node::of('taxCategory'));
 
-            $variantsArray = $variants->getChildren()->toArray();
-            $masterVariantArray = $variantsArray[0];
-            array_shift($variantsArray);
+            $productDraft = ProductDraft::of();
+            $productDraft->setSlug(LocalizedString::fromArray($slugNode->getChildren()->toArray()));
+            $productDraft->setName(LocalizedString::fromArray($nameNode->getChildren()->toArray()));
+            $productDraft->setProductType(ProductTypeReference::fromArray($productTypeNode->getChildren()->toArray()));
+
+            if ($taxCategoryNode) {
+                $productDraft->setTaxCategory(
+                    TaxCategoryReference::fromArray(
+                        $taxCategoryNode->getChildren()->toArray()
+                    )
+                );
+            }
+
+            $variants = $variantNodes->getChildren()->toArray();
+            $masterVariant = array_pop($variants);
 
             $masterVariantDraft = ProductVariantDraft::of()
-                ->setSku($masterVariantArray['sku'])
+                ->setSku($masterVariant['sku'])
                 ->setAttributes(
-                    AttributeCollection::fromArray($masterVariantArray['attributes'])
+                    AttributeCollection::fromArray($masterVariant['attributes'])
+                )->setPrices(
+                    PriceDraftCollection::fromArray($masterVariant['prices'])
                 );
 
-            $productDraft->setMasterVariant($masterVariantDraft);
+            $productDraft->setMasterVariant(
+                $masterVariantDraft
+            );
 
-            if (count($variantsArray)) {
+            if (count($variants)) {
                 $variantCollection = ProductVariantDraftCollection::of();
-                foreach ($variantsArray as $vKey => $variant) {
+                foreach ($variants as $variant) {
                     $variantCollection->add(
                         ProductVariantDraft::of()
                             ->setSku($variant['sku'])
                             ->setAttributes(
                                 AttributeCollection::fromArray($variant['attributes'])
+                            )->setPrices(
+                                PriceDraftCollection::fromArray($variant['prices'])
                             )
                     );
-
-                    $productDraft->setVariants($variantCollection);
                 }
+                $productDraft->setVariants($variantCollection);
             }
 
             $categoryReferences = CategoryReferenceCollection::of();
-            $categoriesArray = $categories->getChildren()->toArray();
 
-            foreach ($categories->getChildren()->toList() as $category) {
-                $categoryArray = $category->getChildren()->toArray();
-                if ($categoryArray['externalId']) {
-                    $query = sprintf('externalId="%s"', $categoryArray['externalId']);
-                } elseif ($categoryArray['key']) {
-                    $query = sprintf('externalId="%s"', $categoryArray['key']);
+            foreach ($categoryNodes->getChildren()->toList() as $categoryNode) {
+                $category = $categoryNode->getChildren()->toArray();
+                if ($category['externalId']) {
+                    $query = sprintf('externalId="%s"', $category['externalId']);
+                } elseif ($category['key']) {
+                    $query = sprintf('externalId="%s"', $category['key']);
                 } else {
-                    $query = sprintf('externalId="%s"', $categoryArray['id']);
+                    $query = sprintf('externalId="%s"', $category['id']);
                 }
 
                 $request = CategoryQueryRequest::of();
                 $request->where($query)->limit(1);
                 $response = $request->executeWithClient($this->client);
-                $result = $request->mapFromResponse($response);
-                $category = $result->current();
 
-                $categoryReference = CategoryReference::ofId($category->getId());
-                $categoryReferences->add($categoryReference);
+                $result = $request->mapFromResponse($response);
+                $categoryNode = $result->current();
+
+                if ($categoryNode && $categoryNode instanceof Category) {
+                    $categoryReference = CategoryReference::ofId($categoryNode->getId());
+                    $categoryReferences->add($categoryReference);
+                }
             }
 
             $productDraft->setCategories($categoryReferences);
 
+            $response = null;
             $request = ProductCreateRequest::ofDraft($productDraft);
             $response = $request->executeWithClient($this->client);
+
+
 
             if ($response->isError()) {
                 $this->getLogger()->log(
