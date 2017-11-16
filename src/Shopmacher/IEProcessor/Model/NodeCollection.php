@@ -75,7 +75,7 @@ class NodeCollection implements TransformArrayAbleInterface
      */
     public function findNode(Node $node)
     {
-        $nodeIndex = NodeIdentifier::create($node->getKey(), $node->getId());
+        $nodeIndex = NodeIdentifier::create($node->getKey(), $node->getNId());
 
         if (isset($this->indexes[$nodeIndex])) {
             $index = $this->indexes[$nodeIndex];
@@ -96,7 +96,7 @@ class NodeCollection implements TransformArrayAbleInterface
             $node->setKey(count($this->nodes));
         }
         $this->nodes[] = $node;
-        $index = NodeIdentifier::create($node->getKey(), $node->getId());
+        $index = NodeIdentifier::create($node->getKey(), $node->getNId());
         $this->indexes[$index] = count($this->nodes) - 1;
 
         return $this;

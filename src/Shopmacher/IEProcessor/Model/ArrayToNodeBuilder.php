@@ -33,7 +33,7 @@ class ArrayToNodeBuilder
 
             if (isset($node)) {
                 if ($cKey == 'id') {
-                    $node->setId($nodeData);
+                    $node->setNId($nodeData);
                 }
                 $node->addChildren($childNode);
             } else {

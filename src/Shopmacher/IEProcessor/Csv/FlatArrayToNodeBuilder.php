@@ -25,14 +25,14 @@ class FlatArrayToNodeBuilder
             $node->setKey($key);
             if (is_array($childrenMap)) {
                 foreach ($childrenMap as $cKey => $map) {
-                    if ($cKey === 'id') {
-                        $node->setId($raw[$map]);
-                        continue;
-                    }
-                    if (is_string($map) && preg_match('/^not_null\(%(.*)%\)$/', $map)) {
+                    if (is_string($map)) {
                         $value = $stackConverter::execute($map, $raw);
                         if (empty($value)) {
                             return null;
+                        }
+                        if ($cKey === Node::IDENTIFIER) {
+                            $node->setNId($value);
+                            continue;
                         }
                     }
                     $cNode = FlatArrayToNodeBuilder::build($raw, [$cKey => $map]);

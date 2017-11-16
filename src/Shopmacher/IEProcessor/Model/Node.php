@@ -9,9 +9,15 @@ namespace Shopmacher\IEProcessor\Model;
 class Node implements TransformArrayAbleInterface
 {
     /**
+     * this value represented for a individual node
+     * that means two nodes are the same if they have
+     * the same nid
+     */
+    const IDENTIFIER = 'nid';
+    /**
      * @var mixed
      */
-    private $id;
+    private $nId;
 
     /**
      * @var mixed
@@ -31,9 +37,9 @@ class Node implements TransformArrayAbleInterface
     /**
      * @return mixed
      */
-    public function getId()
+    public function getNId()
     {
-        return $this->id;
+        return $this->nId;
     }
 
     /**
@@ -46,12 +52,12 @@ class Node implements TransformArrayAbleInterface
     }
 
     /**
-     * @param $id
+     * @param $nId
      * @return $this
      */
-    public function setId($id)
+    public function setNId($nId)
     {
-        $this->id = $id;
+        $this->nId = $nId;
 
         return $this;
     }
@@ -136,7 +142,7 @@ class Node implements TransformArrayAbleInterface
      */
     public function isSame(Node $node)
     {
-        return $this->id === $node->id && $this->key === $node->key;
+        return $this->nId === $node->nId && $this->key === $node->key;
     }
 
     /**
@@ -155,7 +161,7 @@ class Node implements TransformArrayAbleInterface
      */
     public static function ofKeyAndId($key, $id)
     {
-        return (new static($key))->setId($id);
+        return (new static($key))->setNId($id);
     }
 
     /**
