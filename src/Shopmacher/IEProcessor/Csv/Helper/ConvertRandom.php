@@ -3,16 +3,15 @@
 namespace Shopmacher\IEProcessor\Csv\Helper;
 
 /**
- * Class NotNullConverter
+ * Class ConvertRandom
  * @package Shopmacher\IEProcessor\Csv\Helper
  */
-class NotNullConverter implements ConverterInterface
+class ConvertRandom implements ConverterInterface
 {
-    const PATTERN = '/^not_null\((.*)\)$/';
+    const PATTERN = '/^random\(([0-9]+-[0-9]+)\)$/';
 
     /**
-     * @param string $key
-     * @return bool|mixed
+     * @inheritdoc
      */
     public function matching(&$key)
     {
@@ -27,14 +26,11 @@ class NotNullConverter implements ConverterInterface
     /**
      * @param mixed $value
      * @param array $raw
-     * @return mixed
+     * @return int
      */
     public function apply($value, $raw)
     {
-        if (empty($value)) {
-            return null;
-        }
-
-        return $value;
+        $range = explode('-', $value);
+        return rand($range[0], $range[1]);
     }
 }

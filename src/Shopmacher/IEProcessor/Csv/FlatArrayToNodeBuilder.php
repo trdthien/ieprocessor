@@ -27,7 +27,7 @@ class FlatArrayToNodeBuilder
                 foreach ($childrenMap as $cKey => $map) {
                     if (is_string($map)) {
                         $value = $stackConverter::execute($map, $raw);
-                        if (empty($value)) {
+                        if (is_null($value)) {
                             return null;
                         }
                         if ($cKey === Node::IDENTIFIER) {
