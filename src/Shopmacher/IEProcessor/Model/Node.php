@@ -15,6 +15,10 @@ class Node implements TransformArrayAbleInterface
      */
     const IDENTIFIER = 'nid';
     /**
+     * node name
+     */
+    const KEY_NODE = 'nkey';
+    /**
      * @var mixed
      */
     private $nId;

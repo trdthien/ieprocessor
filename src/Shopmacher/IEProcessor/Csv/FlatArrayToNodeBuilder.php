@@ -34,6 +34,10 @@ class FlatArrayToNodeBuilder
                             $node->setNId($value);
                             continue;
                         }
+                        if ($cKey === Node::KEY_NODE) {
+                            $node->setKey($value);
+                            continue;
+                        }
                     }
                     $cNode = FlatArrayToNodeBuilder::build($raw, [$cKey => $map]);
                     if ($cNode) {
