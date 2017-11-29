@@ -8,7 +8,7 @@ namespace Shopmacher\IEProcessor\Csv\Helper;
  */
 class ConvertNumber implements ConverterInterface
 {
-    const PATTERN = '/^number\(%([^%\(\)]+)%\)$/';
+    const PATTERN = '/^number\((.*)\)$/';
 
     /**
      * @inheritdoc
