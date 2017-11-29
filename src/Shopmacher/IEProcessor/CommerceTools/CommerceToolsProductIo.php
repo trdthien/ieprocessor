@@ -111,26 +111,28 @@ class CommerceToolsProductIo implements NodeIoInterface
                 ->setSku($masterVariant['sku'])
                 ->setAttributes(
                     AttributeCollection::fromArray($masterVariant['attributes'])
-                )->setPrices(
-                    PriceDraftCollection::fromArray($masterVariant['prices'])
                 );
 
-            $productDraft->setMasterVariant(
-                $masterVariantDraft
-            );
+            if (isset($masterVariant['prices'])) {
+                $masterVariantDraft->setPrices(PriceDraftCollection::fromArray($masterVariant['prices']));
+            }
+
+            $productDraft->setMasterVariant($masterVariantDraft);
 
             if (count($variants)) {
                 $variantCollection = ProductVariantDraftCollection::of();
                 foreach ($variants as $variant) {
-                    $variantCollection->add(
-                        ProductVariantDraft::of()
-                            ->setSku($variant['sku'])
-                            ->setAttributes(
-                                AttributeCollection::fromArray($variant['attributes'])
-                            )->setPrices(
-                                PriceDraftCollection::fromArray($variant['prices'])
-                            )
-                    );
+                    $variantDraft = ProductVariantDraft::of()
+                        ->setSku($variant['sku'])
+                        ->setAttributes(
+                            AttributeCollection::fromArray($variant['attributes'])
+                        );
+
+                    if (isset($variant['prices'])) {
+                        $variantDraft->setPrices(PriceDraftCollection::fromArray($variant['prices']));
+                    }
+
+                    $variantCollection->add($variantDraft);
                 }
                 $productDraft->setVariants($variantCollection);
             }
@@ -166,14 +168,13 @@ class CommerceToolsProductIo implements NodeIoInterface
             $request = ProductCreateRequest::ofDraft($productDraft);
             $response = $request->executeWithClient($this->client);
 
-
-
             if ($response->isError()) {
                 $this->getLogger()->log(
                     LogLevel::ERROR,
                     sprintf(
-                        "Message: %s",
-                        $response->getErrors()->current()->getMessage()
+                        "Message: %s; Product: %s",
+                        $response->getErrors()->current()->getMessage(),
+                        serialize($productDraft->toArray())
                     )
                 );
             }
