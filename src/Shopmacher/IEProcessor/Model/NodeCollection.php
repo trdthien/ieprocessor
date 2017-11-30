@@ -27,9 +27,14 @@ class NodeCollection implements TransformArrayAbleInterface
         foreach ($this->nodes as $node) {
             if ($node instanceof Node) {
                 if ($node->getChildren() instanceof NodeCollection) {
-                    $nodes[$node->getKey()] = $node->getChildren()->toArray();
+                    $children = $node->getChildren()->toArray();
                 } else {
-                    $nodes[$node->getKey()] = $node->getChildren();
+                    $children = $node->getChildren();
+                }
+                if (isset($nodes[$node->getKey()])) {
+                    $nodes[] = $children;
+                } else {
+                    $nodes[$node->getKey()] = $children;
                 }
             } else {
                 $nodes[] = $node;
