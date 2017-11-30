@@ -31,6 +31,6 @@ class ConvertCentAmount implements ConverterInterface
     public function apply($value, $raw)
     {
         $value = (float) $value;
-        return (int) $value * 100;
+        return (int) (string) $value * 100;
     }
 }
