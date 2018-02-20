@@ -112,7 +112,15 @@ class CsvDataIo implements NodeIoInterface
             $data = NodeToFlatArrayBuilder::build($node)[0];
             if ($this->reverseMap) {
                 foreach ($this->reverseMap as $key => $mapValue) {
-                    $records[$row+1][] = isset($data[$key]) ? $data[$key] : null;
+                    if (isset($data[$key])) {
+                        if (is_bool($data[$key])) {
+                            $records[$row+1][] = $data[$key] ? 1 : 0;
+                        } else {
+                            $records[$row+1][] = $data[$key];
+                        }
+                    } else {
+                        $records[$row+1][] = null;
+                    }
                 }
             }
         }
