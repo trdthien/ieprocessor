@@ -1,5 +1,15 @@
 {
+    "name": "shopmacher/ieprocessor",
+    "type": "ieprocessor",
+    "description": "Import and Export",
+    "minimum-stability": "dev",
+    "license": "MIT",
+    "authors": [{
+        "name": "SHOPMACHER eCommerce GmbH & Co. KG",
+        "homepage": "http://www.shopmacher.de"
+    }],
     "require": {
+        "php": ">=7.0",
         "symfony/yaml": "^3.3",
         "parsecsv/php-parsecsv": "^0.4.5",
         "symfony/property-info": "^3.3",
@@ -7,18 +17,30 @@
         "commercetools/php-sdk": "^2.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.6"
+        "phpunit/phpunit": "6.0.*",
+        "phpmd/phpmd": "2.6.*"
     },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://satis.shopmacher.org"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Shopmacher\\": "src/Shopmacher/"
         }
     },
-    "autoload-dev": {
-        "classmap": [
-            "tests/Mapper/Dummy/Foo.php",
-            "tests/Mapper/Dummy/Bar.php",
-            "tests/Mapper/Dummy/CommerceToolsObjectDraft.php"
-        ]
+    "config": {
+        "bin-dir": "bin",
+        "github-oauth": {
+            "github.com": "2f583d5061060488646d3483586f70d72092bb05"
+        },
+        "discard-changes": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1.x-dev"
+        }
     }
 }
