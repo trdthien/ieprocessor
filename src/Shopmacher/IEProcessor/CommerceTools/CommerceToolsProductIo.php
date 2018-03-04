@@ -85,6 +85,7 @@ class CommerceToolsProductIo implements NodeIoInterface
     {
         foreach ($nodes->toList() as $node) {
             $nameNode = $node->getChildren()->findNode(Node::of('name'));
+            $keyNode = $node->getChildren()->findNode(Node::of('key'));
             $slugNode = $node->getChildren()->findNode(Node::of('slug'));
             $variantNodes = $node->getChildren()->findNode(Node::of('variants'));
             $categoryNodes = $node->getChildren()->findNode(Node::of('categories'));
@@ -92,6 +93,7 @@ class CommerceToolsProductIo implements NodeIoInterface
             $taxCategoryNode = $node->getChildren()->findNode(Node::of('taxCategory'));
 
             $productDraft = ProductDraft::of();
+            $productDraft->setKey($keyNode->getChildren());
             $productDraft->setSlug(LocalizedString::fromArray($slugNode->getChildren()->toArray()));
             $productDraft->setName(LocalizedString::fromArray($nameNode->getChildren()->toArray()));
             $productDraft->setProductType(ProductTypeReference::fromArray($productTypeNode->getChildren()->toArray()));
